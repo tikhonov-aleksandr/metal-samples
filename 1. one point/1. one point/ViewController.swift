@@ -8,23 +8,15 @@
 import UIKit
 import MetalKit
 
-final class Renderer: NSObject {
-    
-}
-
-extension Renderer: MTKViewDelegate {
-    
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) { }
-    
-    func draw(in view: MTKView) {
-        
-    }
-}
-
 class ViewController: UIViewController {
 
-    @IBOutlet weak var metalView: MTKView!
+    private var metalView: MTKView!
     private var renderer: Renderer!
+    
+    override func loadView() {
+        metalView = MTKView()
+        view = metalView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
