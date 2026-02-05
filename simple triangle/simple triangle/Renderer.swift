@@ -13,10 +13,10 @@ final class Renderer: NSObject {
     private var device: MTLDevice!
     private var commandQueue: MTLCommandQueue!
     
-    private var verticies: [Float] = [
-        -1, -1, 0,
-         0, 0, 0,
-         1, -1, 0,
+    private var verticies: [SIMD3<Float>] = [
+        SIMD3<Float>(-1, -1, 0),
+        SIMD3<Float>(0, 0, 0),
+        SIMD3<Float>(1, -1, 0),
     ]
     
     private var vertexBuffer: MTLBuffer!
@@ -36,6 +36,18 @@ final class Renderer: NSObject {
     private func setup() {
         device = MTLCreateSystemDefaultDevice()
         commandQueue = device.makeCommandQueue()
+        
+        vertexBuffer = device.makeBuffer(bytes: verticies, length: MemoryLayout<SIMD3<Float>>.stride * verticies.count)
+        
+        let library = device.makeDefaultLibrary()
+        let vertexFunction = library?.makeFunction(name: "vertex_main")
+        let fragmentFunction = library?.makeFunction(name: "fragment_main")
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        renderPipelineDescriptor.vertexFunction = vertexFunction
+        renderPipelineDescriptor.fragmentFunction = fragmentFunction
+        renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        
+        pipelineState = try? device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
     }
     
     private func drawCommands(in view: MTKView) {
@@ -49,11 +61,9 @@ final class Renderer: NSObject {
         let commandBuffer = commandQueue.makeCommandBuffer()
 
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: verticies.count)
+        renderCommandEncoder?.setRenderPipelineState(pipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        pipelineState = MTLRenderPipelineState(descriptor: renderPipelineDescriptor)
+        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: verticies.count)
         
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(drawable)
