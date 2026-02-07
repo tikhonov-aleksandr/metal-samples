@@ -26,7 +26,7 @@ final class Renderer: NSObject {
     ]
     
     private var vertexBuffer: MTLBuffer!
-    private var indicesBuffer: MTLBuffer!
+    private var indexBuffer: MTLBuffer!
     private var pipelineState: MTLRenderPipelineState!
     
     override init() {
@@ -45,7 +45,7 @@ final class Renderer: NSObject {
         commandQueue = device.makeCommandQueue()
         
         vertexBuffer = device.makeBuffer(bytes: verticies, length: MemoryLayout<SIMD3<Float>>.stride * verticies.count)
-        indicesBuffer = device.makeBuffer(bytes: vertexIndices, length: MemoryLayout<UInt16>.stride * vertexIndices.count)
+        indexBuffer = device.makeBuffer(bytes: vertexIndices, length: MemoryLayout<UInt16>.stride * vertexIndices.count)
         
         let library = device.makeDefaultLibrary()
         let vertexFunction = library?.makeFunction(name: "vertex_main")
@@ -72,7 +72,7 @@ final class Renderer: NSObject {
         renderCommandEncoder?.setRenderPipelineState(pipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         
-        renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: vertexIndices.count, indexType: .uint16, indexBuffer: indicesBuffer, indexBufferOffset: 0)
+        renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: vertexIndices.count, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
         
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(drawable)
