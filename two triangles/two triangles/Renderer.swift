@@ -20,7 +20,7 @@ final class Renderer: NSObject {
         SIMD3<Float>(1, 1, 0),   // 3
     ]
     
-    private var vertexIndices: [Int] = [
+    private var vertexIndices: [UInt16] = [
         0, 1, 2,
         0, 2, 3
     ]
