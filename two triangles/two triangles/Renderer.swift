@@ -28,6 +28,7 @@ final class Renderer: NSObject {
     private var vertexBuffer: MTLBuffer!
     private var indexBuffer: MTLBuffer!
     private var pipelineState: MTLRenderPipelineState!
+    private var time: Float = 0
     
     override init() {
         super.init()
@@ -72,6 +73,12 @@ final class Renderer: NSObject {
         renderCommandEncoder?.setRenderPipelineState(pipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         
+        time += 1.0/Float(view.preferredFramesPerSecond)
+        let movedBy = sin(time) / 2.0 + 0.5
+        
+        var params = Params(movedBy: movedBy)
+        renderCommandEncoder?.setVertexBytes(&params, length: MemoryLayout<Params>.stride, index: 1)
+        
         renderCommandEncoder?.drawIndexedPrimitives(type: .triangle, indexCount: vertexIndices.count, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
         
         renderCommandEncoder?.endEncoding()
@@ -88,6 +95,10 @@ extension Renderer: MTKViewDelegate {
     func draw(in view: MTKView) {
         drawCommands(in: view)
     }
+}
+
+struct Params {
+    var movedBy: Float
 }
 
 
