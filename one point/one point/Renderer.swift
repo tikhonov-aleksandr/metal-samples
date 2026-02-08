@@ -13,20 +13,6 @@ final class Renderer: NSObject {
     private var device: MTLDevice!
     private var commandQueue: MTLCommandQueue!
     
-    private var verticies: [SIMD3<Float>] = [
-        SIMD3<Float>(-1, 1, 0),  // 0
-        SIMD3<Float>(-1, -1, 0), // 1
-        SIMD3<Float>(1, -1, 0),  // 2
-        SIMD3<Float>(1, 1, 0),   // 3
-    ]
-    
-    private var vertexIndices: [UInt16] = [
-        0, 1, 2,
-        0, 2, 3
-    ]
-    
-    private var vertexBuffer: MTLBuffer!
-    private var indexBuffer: MTLBuffer!
     private var pipelineState: MTLRenderPipelineState!
     
     override init() {
@@ -43,9 +29,6 @@ final class Renderer: NSObject {
     private func setup() {
         device = MTLCreateSystemDefaultDevice()
         commandQueue = device.makeCommandQueue()
-        
-        vertexBuffer = device.makeBuffer(bytes: verticies, length: MemoryLayout<SIMD3<Float>>.stride * verticies.count)
-        indexBuffer = device.makeBuffer(bytes: vertexIndices, length: MemoryLayout<UInt16>.stride * vertexIndices.count)
         
         let library = device.makeDefaultLibrary()
         let vertexFunction = library?.makeFunction(name: "vertex_main")
@@ -70,9 +53,8 @@ final class Renderer: NSObject {
 
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(pipelineState)
-        renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         
-        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+        renderCommandEncoder?.drawPrimitives(type: .point, vertexStart: 0, vertexCount: 3)
         
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(drawable)
