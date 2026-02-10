@@ -6,14 +6,27 @@
 //
 
 import UIKit
+import MetalKit
 
 class ViewController: UIViewController {
 
+    private var mtkView: MTKView!
+    private var renderer: Renderer!
+    
+    override func loadView() {
+        mtkView = MTKView()
+        view = mtkView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        configure()
     }
 
+    private func configure() {
+        renderer = Renderer()
+        renderer.setupView(mtkView)
+    }
 
 }
 
