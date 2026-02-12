@@ -70,6 +70,12 @@ final class Renderer: NSObject {
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        var constants = Constants(color: SIMD3(1.0, 0.0, 0.0))
+        renderCommandEncoder?.setVertexBytes(
+            &constants,
+            length: MemoryLayout<Constants>.stride,
+            index: 1
+        )
         
         renderCommandEncoder?.drawIndexedPrimitives(
             type: .triangle,
@@ -78,7 +84,6 @@ final class Renderer: NSObject {
             indexBuffer: indexBuffer,
             indexBufferOffset: 0
         )
-        
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(currentDrawable)
         commandBuffer?.commit()
@@ -92,4 +97,8 @@ extension Renderer: MTKViewDelegate {
     func draw(in view: MTKView) {
         drawCommands(in: view)
     }
+}
+
+struct Constants {
+    var color: SIMD3<Float>
 }
