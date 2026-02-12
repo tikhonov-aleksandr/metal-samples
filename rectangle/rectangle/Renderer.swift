@@ -14,12 +14,20 @@ final class Renderer: NSObject {
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
     private var vertexBuffer: MTLBuffer!
+    private var indexBuffer: MTLBuffer!
     
     private var verticies: [SIMD3<Float>] = [
-        SIMD3<Float>(-1, -1, 0),
-        SIMD3<Float>(0, 0, 0),
-        SIMD3<Float>(1, -1, 0),
+        SIMD3<Float>(-1, 1, 0), // (0)
+        SIMD3<Float>(-1, -1, 0),// (1)
+        SIMD3<Float>(1, -1, 0), // (2)
+        SIMD3<Float>(1, 1, 0),  // (3)
     ]
+    
+    private var indices: [UInt16] = [
+        0, 1, 2,
+        0, 2, 3
+    ]
+    
     
     override init() {
         super.init()
@@ -46,6 +54,7 @@ final class Renderer: NSObject {
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         
         vertexBuffer = device.makeBuffer(bytes: verticies, length: MemoryLayout<SIMD3<Float>>.stride * verticies.count)
+        indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
     }
     
     private func drawCommands(in view: MTKView) {
@@ -61,7 +70,14 @@ final class Renderer: NSObject {
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: verticies.count)
+        
+        renderCommandEncoder?.drawIndexedPrimitives(
+            type: .triangle,
+            indexCount: indices.count,
+            indexType: .uint16,
+            indexBuffer: indexBuffer,
+            indexBufferOffset: 0
+        )
         
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(currentDrawable)
