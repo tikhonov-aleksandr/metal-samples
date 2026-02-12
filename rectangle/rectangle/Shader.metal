@@ -8,21 +8,21 @@
 #include <metal_stdlib>
 using namespace metal;
 
+struct Vertex {
+    float3 position;
+    float3 color;
+};
+
 struct VertexOut {
     float4 position [[position]];
     float3 color;
 };
 
-struct Constants {
-    float3 color;
-};
-
-vertex VertexOut vertex_main(const device float3 *verticies [[buffer(0)]], uint vid [[vertex_id]], constant Constants &constants [[buffer(1)]]) {
-    float3 position = verticies[vid];
-    float3 color = constants.color;
-    VertexOut out = {
-        .position = float4(position, 1),
-        .color = color
+vertex VertexOut vertex_main(const device Vertex *vertices [[buffer(0)]], uint vid [[vertex_id]]) {
+    Vertex ver = vertices[vid];
+    VertexOut out {
+        .position = float4(ver.position, 1),
+        .color = ver.color
     };
     return out;
 }

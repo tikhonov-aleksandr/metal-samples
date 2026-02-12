@@ -16,18 +16,17 @@ final class Renderer: NSObject {
     private var vertexBuffer: MTLBuffer!
     private var indexBuffer: MTLBuffer!
     
-    private var verticies: [SIMD3<Float>] = [
-        SIMD3<Float>(-1, 1, 0), // (0)
-        SIMD3<Float>(-1, -1, 0),// (1)
-        SIMD3<Float>(1, -1, 0), // (2)
-        SIMD3<Float>(1, 1, 0),  // (3)
+    private var vertices: [Vertex] = [
+        Vertex(position: SIMD3<Float>(-1, 1, 0), color: SIMD3<Float>(1, 0, 0)), // (0)
+        Vertex(position: SIMD3<Float>(-1, -1, 0), color: SIMD3<Float>(0, 1, 0)), // (1)
+        Vertex(position: SIMD3<Float>(1, -1, 0), color: SIMD3<Float>(0, 0, 1)), // (2)
+        Vertex(position: SIMD3<Float>(1, 1, 0), color: SIMD3<Float>(0, 0, 0)) // (3)
     ]
     
     private var indices: [UInt16] = [
         0, 1, 2,
         0, 2, 3
     ]
-    
     
     override init() {
         super.init()
@@ -53,7 +52,7 @@ final class Renderer: NSObject {
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         
-        vertexBuffer = device.makeBuffer(bytes: verticies, length: MemoryLayout<SIMD3<Float>>.stride * verticies.count)
+        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count)
         indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
     }
     
@@ -70,12 +69,6 @@ final class Renderer: NSObject {
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        var constants = Constants(color: SIMD3(1.0, 0.0, 0.0))
-        renderCommandEncoder?.setVertexBytes(
-            &constants,
-            length: MemoryLayout<Constants>.stride,
-            index: 1
-        )
         
         renderCommandEncoder?.drawIndexedPrimitives(
             type: .triangle,
@@ -84,6 +77,7 @@ final class Renderer: NSObject {
             indexBuffer: indexBuffer,
             indexBufferOffset: 0
         )
+        
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(currentDrawable)
         commandBuffer?.commit()
@@ -99,6 +93,7 @@ extension Renderer: MTKViewDelegate {
     }
 }
 
-struct Constants {
+struct Vertex {
+    var position: SIMD3<Float>
     var color: SIMD3<Float>
 }
