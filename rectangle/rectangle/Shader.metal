@@ -9,7 +9,7 @@
 using namespace metal;
 
 struct VertexIn {
-    float4 position [[attribute(0)]];
+    float3 position [[attribute(0)]];
     float4 color [[attribute(1)]];
 };
 
@@ -20,7 +20,7 @@ struct VertexOut {
 
 vertex VertexOut vertex_main(const VertexIn vertexIn [[stage_in]]) {
     VertexOut out;
-    out.position = vertexIn.position;
+    out.position = float4(vertexIn.position, 1);
     out.color = vertexIn.color;
     return out;
 }

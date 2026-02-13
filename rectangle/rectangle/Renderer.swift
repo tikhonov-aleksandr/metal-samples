@@ -53,10 +53,10 @@ final class Renderer: NSObject {
         
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3
-        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].offset = MemoryLayout<Vertex>.offset(of: \.position)!
         vertexDescriptor.attributes[0].bufferIndex = 0
         vertexDescriptor.attributes[1].format = .float4
-        vertexDescriptor.attributes[1].offset = MemoryLayout<SIMD3<Float>>.stride
+        vertexDescriptor.attributes[1].offset = MemoryLayout<Vertex>.offset(of: \.color)!
         vertexDescriptor.attributes[1].bufferIndex = 0
         vertexDescriptor.layouts[0].stride = MemoryLayout<Vertex>.stride
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
