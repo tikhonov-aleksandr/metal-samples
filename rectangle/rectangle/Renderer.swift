@@ -17,10 +17,10 @@ final class Renderer: NSObject {
     private var indexBuffer: MTLBuffer!
     
     private var vertices: [Vertex] = [
-        Vertex(position: SIMD3<Float>(-1, 1, 0), color: SIMD3<Float>(1, 0, 0)), // (0)
-        Vertex(position: SIMD3<Float>(-1, -1, 0), color: SIMD3<Float>(0, 1, 0)), // (1)
-        Vertex(position: SIMD3<Float>(1, -1, 0), color: SIMD3<Float>(0, 0, 1)), // (2)
-        Vertex(position: SIMD3<Float>(1, 1, 0), color: SIMD3<Float>(0, 0, 0)) // (3)
+        Vertex(position: SIMD3<Float>(-1, 1, 0), color: SIMD4<Float>(1, 0, 0, 1)), // (0)
+        Vertex(position: SIMD3<Float>(-1, -1, 0), color: SIMD4<Float>(0, 1, 0, 1)), // (1)
+        Vertex(position: SIMD3<Float>(1, -1, 0), color: SIMD4<Float>(0, 0, 1, 1)), // (2)
+        Vertex(position: SIMD3<Float>(1, 1, 0), color: SIMD4<Float>(0, 0, 0, 1)) // (3)
     ]
     
     private var indices: [UInt16] = [
@@ -50,7 +50,20 @@ final class Renderer: NSObject {
         renderPipelineDescriptor.vertexFunction = vertexFunction
         renderPipelineDescriptor.fragmentFunction = fragmentFunction
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float4
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        vertexDescriptor.attributes[1].format = .float4
+        vertexDescriptor.attributes[1].offset = MemoryLayout<SIMD4<Float>>.stride
+        vertexDescriptor.attributes[1].bufferIndex = 0
+        vertexDescriptor.layouts[0].stride = MemoryLayout<Vertex>.stride
+        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
+        
+        
         
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count)
         indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
@@ -95,5 +108,5 @@ extension Renderer: MTKViewDelegate {
 
 struct Vertex {
     var position: SIMD3<Float>
-    var color: SIMD3<Float>
+    var color: SIMD4<Float>
 }
