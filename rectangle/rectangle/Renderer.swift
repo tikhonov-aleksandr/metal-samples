@@ -63,7 +63,6 @@ final class Renderer: NSObject {
         
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         
-        
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count)
         indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
     }
