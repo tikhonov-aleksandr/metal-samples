@@ -13,21 +13,9 @@ final class Renderer: NSObject {
     private var device: MTLDevice!
     private var commandQueue: MTLCommandQueue!
     private var renderPipelineState: MTLRenderPipelineState!
-    private var vertexBuffer: MTLBuffer!
-    private var indexBuffer: MTLBuffer!
+    private var model: Model!
     
-    private var vertices: [Vertex] = [
-        Vertex(position: SIMD3<Float>(-1, 1, 0), color: SIMD4<Float>(1, 0, 0, 1)), // (0)
-        Vertex(position: SIMD3<Float>(-1, -1, 0), color: SIMD4<Float>(0, 1, 0, 1)), // (1)
-        Vertex(position: SIMD3<Float>(1, -1, 0), color: SIMD4<Float>(0, 0, 1, 1)), // (2)
-        Vertex(position: SIMD3<Float>(1, 1, 0), color: SIMD4<Float>(0, 0, 0, 1)) // (3)
-    ]
-    
-    private var indices: [UInt16] = [
-        0, 1, 2,
-        0, 2, 3
-    ]
-    
+
     override init() {
         super.init()
         setup()
@@ -56,8 +44,7 @@ final class Renderer: NSObject {
         
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Vertex>.stride * vertices.count)
-        indexBuffer = device.makeBuffer(bytes: indices, length: MemoryLayout<UInt16>.stride * indices.count)
+        model = Model(name: "train", device: device)
     }
     
     private func drawCommands(in view: MTKView) {
@@ -72,15 +59,23 @@ final class Renderer: NSObject {
         let commandBuffer = commandQueue.makeCommandBuffer()
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         renderCommandEncoder?.setRenderPipelineState(renderPipelineState)
-        renderCommandEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         
-        renderCommandEncoder?.drawIndexedPrimitives(
-            type: .triangle,
-            indexCount: indices.count,
-            indexType: .uint16,
-            indexBuffer: indexBuffer,
-            indexBufferOffset: 0
-        )
+        for mtkMesh in model.mtkMeshes {
+            for vertexBuffer in mtkMesh.vertexBuffers {
+                renderCommandEncoder?.setVertexBuffer(vertexBuffer.buffer, offset: 0, index: 0)
+                
+                for submesh in mtkMesh.submeshes {
+                    renderCommandEncoder?.drawIndexedPrimitives(
+                        type: .triangle,
+                        indexCount: submesh.indexCount,
+                        indexType: submesh.indexType,
+                        indexBuffer: submesh.indexBuffer.buffer,
+                        indexBufferOffset: submesh.indexBuffer.offset
+                    )
+                }
+                
+            }
+        }
         
         renderCommandEncoder?.endEncoding()
         commandBuffer?.present(currentDrawable)

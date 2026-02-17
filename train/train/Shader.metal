@@ -21,6 +21,7 @@ vertex VertexOut vertex_main(const VertexIn vertexIn [[stage_in]]) {
     VertexOut out;
     out.position = float4(vertexIn.position, 1);
     out.color = float4(0, 0, 1, 1);
+    out.position.y -= 0.5;
     return out;
 }
 
