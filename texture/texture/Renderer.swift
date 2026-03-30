@@ -31,6 +31,13 @@ final class Renderer: NSObject {
         
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         
+        let library = device.makeDefaultLibrary()
+        let vertexFunction = library?.makeFunction(name: "vertex_main")
+        let fragmentFunction = library?.makeFunction(name: "fragment_main")
+        
+        renderPipelineDescriptor.vertexFunction = vertexFunction
+        renderPipelineDescriptor.fragmentFunction = fragmentFunction
+        
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
     }
     
