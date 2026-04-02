@@ -27,5 +27,6 @@ vertex VertexOut vertex_main(const VertexIn vertexIn [[stage_in]]) {
 }
 
 fragment half4 fragment_main(VertexOut vertexIn [[stage_in]]) {
-    return half4(vertexIn.color);
+    float сolor = dot(vertexIn.color.rgb, float3(0.299, 0.587, 0.114));
+    return half4(сolor, сolor, сolor, 1);
 }
