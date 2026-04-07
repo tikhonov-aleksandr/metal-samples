@@ -5,23 +5,26 @@
 //  Created by pino on 07.04.26.
 //
 
+import Foundation
 import MetalKit
 
 struct TextureLoader {
-    
-    let device: MTLDevice
-    
-    func loadTexture() throws -> MTLTexture {
-        let loader = MTKTextureLoader(device: device)
-        let name = "tiger"
-        guard let url = Bundle.main.url(forResource: "tiger", withExtension: "png") else {
-            throw MetalSetupError.textureUnavailable(name)
+
+    private let loader: MTKTextureLoader
+
+    init(device: MTLDevice) {
+        loader = MTKTextureLoader(device: device)
+    }
+
+    func loadTexture(named name: String, fileExtension: String = "png") throws -> MTLTexture {
+        guard let url = Bundle.main.url(forResource: name, withExtension: fileExtension) else {
+            throw MetalSetupError.textureUnavailable(name: name, underlyingError: nil)
         }
+
         do {
-            let texture = try loader.newTexture(URL: url)
-            return texture
+            return try loader.newTexture(URL: url)
         } catch {
-            throw MetalSetupError.textureUnavailable(name)
+            throw MetalSetupError.textureUnavailable(name: name, underlyingError: error)
         }
     }
 }

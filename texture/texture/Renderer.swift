@@ -21,7 +21,7 @@ final class Renderer: NSObject {
         mesh = try QuadMesh(device: context.device)
         
         let textureLoader = TextureLoader(device: context.device)
-        texture = try textureLoader.loadTexture()
+        texture = try textureLoader.loadTexture(named: "tiger")
         super.init()
     }
     
