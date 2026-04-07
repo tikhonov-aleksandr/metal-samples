@@ -21,7 +21,7 @@ enum RenderPipeline {
         }
 
         guard let fragmentFunction = library.makeFunction(name: "textured_fragment") else {
-            throw MetalSetupError.fragmentFunctionUnavailable("fragment_main")
+            throw MetalSetupError.fragmentFunctionUnavailable("textured_fragment")
         }
 
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -61,4 +61,3 @@ enum RenderPipeline {
         return vertexDescriptor
     }
 }
-

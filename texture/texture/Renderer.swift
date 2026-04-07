@@ -44,6 +44,7 @@ final class Renderer: NSObject {
 
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setVertexBuffer(mesh.vertexBuffer, offset: 0, index: 0)
+        renderCommandEncoder.setFragmentTexture(texture, index: 0)
         renderCommandEncoder.drawIndexedPrimitives(
             type: .triangle,
             indexCount: mesh.indexCount,
@@ -51,7 +52,6 @@ final class Renderer: NSObject {
             indexBuffer: mesh.indexBuffer,
             indexBufferOffset: 0
         )
-        renderCommandEncoder.setFragmentTexture(texture, index: 0)
         renderCommandEncoder.endEncoding()
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
