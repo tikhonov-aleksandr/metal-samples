@@ -16,7 +16,8 @@ enum MetalSetupError: LocalizedError {
     case vertexBufferUnavailable
     case vertexDescriptorOffsetUnavailable(String)
     case vertexFunctionUnavailable(String)
-
+    case textureUnavailable(String)
+    
     var errorDescription: String? {
         switch self {
         case .commandQueueUnavailable:
@@ -35,6 +36,8 @@ enum MetalSetupError: LocalizedError {
             "Unable to resolve vertex descriptor offset for \(propertyName)."
         case .vertexFunctionUnavailable(let name):
             "Unable to load vertex function: \(name)."
+        case .textureUnavailable(let name):
+            "Unable to load a texture: \(name)."
         }
     }
 }

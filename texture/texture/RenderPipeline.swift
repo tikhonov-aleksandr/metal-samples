@@ -20,7 +20,7 @@ enum RenderPipeline {
             throw MetalSetupError.vertexFunctionUnavailable("vertex_main")
         }
 
-        guard let fragmentFunction = library.makeFunction(name: "fragment_main") else {
+        guard let fragmentFunction = library.makeFunction(name: "textured_fragment") else {
             throw MetalSetupError.fragmentFunctionUnavailable("fragment_main")
         }
 
@@ -41,6 +41,11 @@ enum RenderPipeline {
         guard let colorOffset = MemoryLayout<Vertex>.offset(of: \.color) else {
             throw MetalSetupError.vertexDescriptorOffsetUnavailable("color")
         }
+        
+        guard let textureCoordinateOffset = MemoryLayout<Vertex>.offset(of: \.textureCoordinate) else {
+            throw MetalSetupError.vertexDescriptorOffsetUnavailable("textureCoordinate")
+        }
+        
 
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3
@@ -49,6 +54,9 @@ enum RenderPipeline {
         vertexDescriptor.attributes[1].format = .float4
         vertexDescriptor.attributes[1].offset = colorOffset
         vertexDescriptor.attributes[1].bufferIndex = 0
+        vertexDescriptor.attributes[2].format = .float2
+        vertexDescriptor.attributes[2].offset = textureCoordinateOffset
+        vertexDescriptor.attributes[2].bufferIndex = 0
         vertexDescriptor.layouts[0].stride = MemoryLayout<Vertex>.stride
         return vertexDescriptor
     }

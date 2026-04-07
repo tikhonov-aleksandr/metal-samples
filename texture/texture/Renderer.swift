@@ -13,11 +13,15 @@ final class Renderer: NSObject {
     private let context: MetalContext
     private let renderPipelineState: MTLRenderPipelineState
     private let mesh: QuadMesh
-
+    private let texture: MTLTexture
+    
     init(context: MetalContext) throws {
         self.context = context
         renderPipelineState = try RenderPipeline.makeState(device: context.device)
         mesh = try QuadMesh(device: context.device)
+        
+        let textureLoader = TextureLoader(device: context.device)
+        texture = try textureLoader.loadTexture()
         super.init()
     }
     
@@ -47,7 +51,7 @@ final class Renderer: NSObject {
             indexBuffer: mesh.indexBuffer,
             indexBufferOffset: 0
         )
-        
+        renderCommandEncoder.setFragmentTexture(texture, index: 0)
         renderCommandEncoder.endEncoding()
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()

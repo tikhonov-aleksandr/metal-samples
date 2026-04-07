@@ -10,4 +10,5 @@ import Foundation
 struct Vertex {
     var position: SIMD3<Float>
     var color: SIMD4<Float>
+    var textureCoordinate: SIMD2<Float>
 }
