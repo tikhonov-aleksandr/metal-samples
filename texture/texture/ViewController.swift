@@ -8,13 +8,12 @@
 import UIKit
 import MetalKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
-    private var metalView: MTKView!
-    private var renderer: Renderer!
+    private let metalView = MTKView()
+    private var renderer: Renderer?
     
     override func loadView() {
-        metalView = MTKView()
         view = metalView
     }
     
@@ -24,10 +23,13 @@ class ViewController: UIViewController {
     }
     
     private func setup() {
-        renderer = Renderer()
-        renderer.setupView(metalView)
+        do {
+            let context = try MetalContext()
+            let renderer = try Renderer(context: context)
+            renderer.setupView(metalView)
+            self.renderer = renderer
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
-
-
 }
-
