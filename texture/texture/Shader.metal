@@ -35,15 +35,15 @@ fragment half4 fragment_main(VertexOut vertexIn [[stage_in]]) {
 }
 
 fragment half4 textured_fragment(
-    VertexOut vertexIn [[stage_in]],
-    texture2d<float> texture [[texture(0)]]
+                                 VertexOut vertexIn [[stage_in]],
+                                 texture2d<float> texture [[texture(0)]]
                                  ) {
-    constexpr sampler defaultSampler;
-    float4 color = texture.sample(defaultSampler, vertexIn.textureCoordinate);
+    constexpr sampler texSampler(
+            coord::normalized,
+            address::repeat,
+            filter::linear,
+            mip_filter::linear
+        );
+    float4 color = texture.sample(texSampler, vertexIn.textureCoordinate);
     return half4(color.r, color.g, color.b, 1);
 }
-
-//fragment half4 fragment_main(VertexOut vertexIn [[stage_in]]) {
-//    float сolor = dot(vertexIn.color.rgb, float3(0.299, 0.587, 0.114));
-//    return half4(сolor, сolor, сolor, 1);
-//}

@@ -16,7 +16,7 @@ struct TextureLoader {
         loader = MTKTextureLoader(device: device)
     }
 
-    func loadTexture(named name: String, fileExtension: String = "png") throws -> MTLTexture {
+    func loadTexture(named name: String, fileExtension: String) throws -> MTLTexture {
         guard let url = Bundle.main.url(forResource: name, withExtension: fileExtension) else {
             throw MetalSetupError.textureUnavailable(name: name, underlyingError: nil)
         }

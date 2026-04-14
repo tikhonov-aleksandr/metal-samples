@@ -20,7 +20,7 @@ final class Renderer: NSObject {
         renderPipelineState = try RenderPipeline.makeState(device: context.device)
         mesh = try QuadMesh(device: context.device)
         let textureLoader = TextureLoader(device: context.device)
-        texture = try textureLoader.loadTexture(named: "tiger")
+        texture = try textureLoader.loadTexture(named: "tiger2", fileExtension: "jpg")
         super.init()
     }
     
