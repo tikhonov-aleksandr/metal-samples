@@ -39,11 +39,11 @@ fragment half4 textured_fragment(
                                  texture2d<float> texture [[texture(0)]]
                                  ) {
     constexpr sampler texSampler(
-            coord::normalized,
-            address::repeat,
-            filter::linear,
-            mip_filter::linear
-        );
+                                 coord::normalized,
+                                 address::repeat,
+                                 filter::nearest,
+                                 mip_filter::linear
+                                 );
     float4 color = texture.sample(texSampler, vertexIn.textureCoordinate);
     return half4(color.r, color.g, color.b, 1);
 }

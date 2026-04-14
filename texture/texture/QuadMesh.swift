@@ -39,22 +39,22 @@ struct QuadMesh {
         Vertex(
             position: SIMD3<Float>(-1, 1, 0),
             color: SIMD4<Float>(1, 0, 0, 1),
-            textureCoordinate: SIMD2<Float>(0, 0)
+            textureCoordinate: SIMD2<Float>(-0.25, -0.25)
         ),
         Vertex(
             position: SIMD3<Float>(-1, -1, 0),
             color: SIMD4<Float>(0, 1, 0, 1),
-            textureCoordinate: SIMD2<Float>(0, 1)
+            textureCoordinate: SIMD2<Float>(-0.25, 1.25)
         ),
         Vertex(
             position: SIMD3<Float>(1, -1, 0),
             color: SIMD4<Float>(0, 0, 1, 1),
-            textureCoordinate: SIMD2<Float>(1, 1)
+            textureCoordinate: SIMD2<Float>(1.25, 1.25)
         ),
         Vertex(
             position: SIMD3<Float>(1, 1, 0),
             color: SIMD4<Float>(1, 0, 0, 1),
-            textureCoordinate: SIMD2<Float>(1, 0)
+            textureCoordinate: SIMD2<Float>(1.25, -0.25)
         )
     ]
 
