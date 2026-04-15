@@ -17,6 +17,7 @@ enum MetalSetupError: LocalizedError {
     case vertexDescriptorOffsetUnavailable(String)
     case vertexFunctionUnavailable(String)
     case textureUnavailable(name: String, underlyingError: Error?)
+    case sampler
     
     var errorDescription: String? {
         switch self {
@@ -42,6 +43,8 @@ enum MetalSetupError: LocalizedError {
             } else {
                 "Unable to find texture: \(name)."
             }
+        case .sampler:
+            "Sampler is unavailable"
         }
     }
 }

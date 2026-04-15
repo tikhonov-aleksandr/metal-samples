@@ -20,8 +20,8 @@ enum RenderPipeline {
             throw MetalSetupError.vertexFunctionUnavailable("vertex_main")
         }
 
-        guard let fragmentFunction = library.makeFunction(name: "textured_fragment") else {
-            throw MetalSetupError.fragmentFunctionUnavailable("textured_fragment")
+        guard let fragmentFunction = library.makeFunction(name: "textured_fragment2") else {
+            throw MetalSetupError.fragmentFunctionUnavailable("textured_fragment2")
         }
 
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
