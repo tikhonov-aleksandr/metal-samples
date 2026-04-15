@@ -22,8 +22,7 @@ final class Renderer: NSObject {
         mesh = try QuadMesh(device: context.device)
         let textureLoader = TextureLoader(device: context.device)
         texture = try textureLoader.loadTexture(named: "tiger2", fileExtension: "jpg")
-        let textureSampler = TextureSampler(device: context.device)
-        samplerState = try textureSampler.makeSamplerState()
+        samplerState = try TextureSampler.makeState(device: context.device)
         super.init()
     }
     

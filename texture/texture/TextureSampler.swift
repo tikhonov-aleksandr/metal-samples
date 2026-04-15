@@ -5,26 +5,21 @@
 //  Created by pino on 15.04.26.
 //
 
-import MetalKit
+import Metal
 
-class TextureSampler {
-    
-    private let device: MTLDevice
-    
-    init(device: MTLDevice) {
-        self.device = device
-    }
-    
-    func makeSamplerState() throws -> MTLSamplerState {
-        
+enum TextureSampler {
+    static func makeState(device: MTLDevice) throws -> MTLSamplerState {
         let descriptor = MTLSamplerDescriptor()
         descriptor.minFilter = .linear
+        descriptor.magFilter = .linear
         descriptor.mipFilter = .linear
-        descriptor.mipFilter = .linear
-        guard let state = device.makeSamplerState(descriptor: descriptor) else {
-            throw MetalSetupError.sampler
+        descriptor.sAddressMode = .repeat
+        descriptor.tAddressMode = .repeat
+
+        guard let samplerState = device.makeSamplerState(descriptor: descriptor) else {
+            throw MetalSetupError.samplerStateUnavailable
         }
-        return state
+
+        return samplerState
     }
-    
 }
