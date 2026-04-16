@@ -13,7 +13,8 @@ final class Renderer: NSObject {
     private let context: MetalContext
     private let renderPipelineState: MTLRenderPipelineState
     private let mesh: QuadMesh
-    private let texture: MTLTexture
+    private let mainTexture: MTLTexture
+    private let frameTexture: MTLTexture
     private let samplerState: MTLSamplerState
     
     init(context: MetalContext) throws {
@@ -21,7 +22,8 @@ final class Renderer: NSObject {
         renderPipelineState = try RenderPipeline.makeState(device: context.device)
         mesh = try QuadMesh(device: context.device)
         let textureLoader = TextureLoader(device: context.device)
-        texture = try textureLoader.loadTexture(named: "tiger2", fileExtension: "jpg")
+        mainTexture = try textureLoader.loadTexture(named: "tiger2", fileExtension: "jpg")
+        frameTexture = try textureLoader.loadTexture(named: "frame", fileExtension: "png")
         samplerState = try TextureSampler.makeState(device: context.device)
         super.init()
     }
@@ -45,7 +47,8 @@ final class Renderer: NSObject {
 
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setVertexBuffer(mesh.vertexBuffer, offset: 0, index: 0)
-        renderCommandEncoder.setFragmentTexture(texture, index: 0)
+        renderCommandEncoder.setFragmentTexture(mainTexture, index: 0)
+        renderCommandEncoder.setFragmentTexture(frameTexture, index: 1)
         renderCommandEncoder.setFragmentSamplerState(samplerState, index: 0)
         renderCommandEncoder.drawIndexedPrimitives(
             type: .triangle,

@@ -56,3 +56,15 @@ fragment half4 textured_fragment2(
     float4 color = texture.sample(textureSampler, vertexIn.textureCoordinate);
     return half4(color.r, color.g, color.b, 1);
 }
+
+fragment half4 textured_fragment3(
+                                  VertexOut vertexIn [[stage_in]],
+                                  texture2d<float> mainTexture [[texture(0)]],
+                                  texture2d<float> frameTexture [[texture(1)]],
+                                  sampler textureSampler [[sampler(0)]]
+                                  ) {
+    float4 mainColor = mainTexture.sample(textureSampler, vertexIn.textureCoordinate);
+    float4 frameColor = frameTexture.sample(textureSampler, vertexIn.textureCoordinate);
+    
+    return half4(color.r, color.g, color.b, 1);
+}
