@@ -65,6 +65,8 @@ fragment half4 textured_fragment3(
                                   ) {
     float4 mainColor = mainTexture.sample(textureSampler, vertexIn.textureCoordinate);
     float4 frameColor = frameTexture.sample(textureSampler, vertexIn.textureCoordinate);
-    
-    return half4(color.r, color.g, color.b, 1);
+    float4 result;
+    result.rgb = mix(mainColor.rgb, frameColor.rgb, frameColor.a);
+    result.a = frameColor.a + mainColor.a * (1.0 - frameColor.a);
+    return half4(result);
 }

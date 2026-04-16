@@ -13,8 +13,8 @@ enum TextureSampler {
         descriptor.minFilter = .linear
         descriptor.magFilter = .linear
         descriptor.mipFilter = .linear
-        descriptor.sAddressMode = .repeat
-        descriptor.tAddressMode = .repeat
+        descriptor.sAddressMode = .clampToEdge
+        descriptor.tAddressMode = .clampToEdge
 
         guard let samplerState = device.makeSamplerState(descriptor: descriptor) else {
             throw MetalSetupError.samplerStateUnavailable
